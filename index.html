@@ -330,6 +330,14 @@ header{background:rgba(2,10,31,.97)!important}
 html{scroll-behavior:auto}
 }
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+@media (max-width:820px),(hover:none){
+*,*:before,*:after{animation-iteration-count:1!important;filter:none!important;box-shadow:none!important}
+.node{filter:none!important}
+svg *{filter:none!important}
+.intro-content{animation:none!important}
+.reveal{transition-duration:.3s!important}
+#particles{display:none}
+}
 </style>
 </head>
 <body>
@@ -432,13 +440,13 @@ html{scroll-behavior:auto}
 <footer><div><strong>SKADIX-NET</strong> · Internet por fibra óptica</div><div>Tecnología de luz para mantenerte conectado.</div><div>© <span id="year"></span> SKADIX-NET</div></footer>
 
 <script>
-const intro=document.getElementById('intro');
-window.addEventListener('load',()=>setTimeout(()=>{intro.classList.add('hide');},7200));
+const intro=document.getElementById('intro');let introDone=false;
+window.addEventListener('load',()=>setTimeout(()=>{intro.classList.add('hide');introDone=true;},7200));
 document.getElementById('year').textContent=new Date().getFullYear();
 // Partículas luminosas de la pantalla de entrada
 const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');let dots=[];
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight;dots=Array.from({length:Math.min(95,Math.floor(innerWidth/12))},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+0.5,v:Math.random()*.7+.15,a:Math.random()*.7+.2}))}
-function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);dots.forEach(d=>{d.x+=d.v;if(d.x>canvas.width+10){d.x=-10;d.y=Math.random()*canvas.height}ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,225,255,${d.a})`;ctx.shadowBlur=12;ctx.shadowColor='#00dfff';ctx.fill()});requestAnimationFrame(draw)}
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;dots=Array.from({length:Math.min(innerWidth<820?28:95,Math.floor(innerWidth/12))},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+0.5,v:Math.random()*.7+.15,a:Math.random()*.7+.2}))}
+function draw(){if(introDone||document.hidden){if(introDone)return;requestAnimationFrame(draw);return}ctx.clearRect(0,0,canvas.width,canvas.height);dots.forEach(d=>{d.x+=d.v;if(d.x>canvas.width+10){d.x=-10;d.y=Math.random()*canvas.height}ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,225,255,${d.a})`;ctx.shadowBlur=12;ctx.shadowColor='#00dfff';ctx.fill()});requestAnimationFrame(draw)}
 resize();draw();addEventListener('resize',resize);
 const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
